@@ -1,0 +1,556 @@
+---
+title:  "------------------ Introducción a R - Plots ------------------"
+subtitle:  <center> <h1>"Herramientas de análisis cuantitativo y su aplicación en la conservación de la biodiversidad"</h1> </center>
+author: "Melissa Guzmán, Juan Zuloaga y Keyvette Tabb"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  rmdformats::readthedown:
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+    code_folding: show
+---
+<center><h2><span style="color:#3399FF">Ecodiversa </span> <span style="color:green">Tropical</span></h2> </center>
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Objetivos de Aprendizaje
+
+Al final de este taller usted podrá saber cómo:
+
+- Definir el concepto de capas en un gráfico
+- Crear un "gráfico de caja" (Box plot)
+- Crear un "gráfico de dispersión" (Scatter plot)
+- Crear una diagrama de dispersión incluyendo una "linea de regresión" (Linear regression)
+- Crear un "histograma" (Histogram)
+- Crear un "gráfico de barras" (Bar Graph)
+
+## 2. Para empezar 
+
+**¿Que significa visualizar datos en una manera efectiva?**
+
+En este taller, vamos a hablar sobre como utilizar R para crear gráficos para visualizar datos. Pero primero deberíamos hablar sobre que se significa visualizar datos en una manera efectiva. ¿Que se significa visualizar datos? Visualizar datos es el proceso en que uno crea visuales interesantes y influyentes para comunicar información especifica de nuestros datos. El diseno juega una parte importante en creando un grafico notable que resonaría con tu audiencia. 
+
+En decidir a visualizar tus datos, es fundamental generar preguntas acerca los datos y buscar respuestas en forma de modelar tus datos. Cuando representando datos en una manera visual, es importante comunicar lo que los datos nos dicen en una manera clara y en el tipo apropiado que nuestra audiencia destinaría entendería. Una pregunta importante cuando decidiendo la forma de representar tus datos es pensar sobre que es la función de los datos. En tomar esto en consideración, nos enfocamos en lo que queremos que la audiencia destinaría del gráfico. 
+
+**¿Qué es necesario para crear gráficos en R?**
+
+R tiene varios funciones programados para crear gráficos, pero también podemos utilizar paquetes, creados por otros usuarios de R, para guardar funciones. Así, instalando un paquete te da acceso a todas las funciones creadas por el usuario. 
+
+Para empezar, vamos a instalar el paquete, ggplot2. Solamente es necesario hacer esto una vez porque ggplot2 automáticamente seria guardado en el sección, "Packages", en RStudio. Usaríamos este paquete para crear nuestros gráficos porque es el programa mas efectivo en creando gráficos de buena calidad. 
+
+```{r, eval=FALSE}
+install.packages('ggplot2')
+```
+
+Cuando el paquete termina de instalarse, aparecería un mensaje indicando que el paquete fue instalado con éxito!
+
+## 3. Capas
+
+En la sección siguiente, vamos a discutir el concepto de capas y porque es fundamental entender como funcionan para usar el paquete `ggplot2()`, un paquete basado en capas de código, para visualizar tus datos.
+
+Para empezar, la función `ggplot2()` contiene la base de datos y defina las variables que deseas visualizar. Esta función trabaja en conjunto con la función `aes()` que describe la variable independiente y dependiente. 
+
+
+Con esta información en mente, vamos a explorar una seria de lineas de código y los resultados para entender como utilizar capas para varias funciones: 
+
+**Codigo 1**
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+
+ggplot()
+```
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #a94442; background-color: #f2dede; border-color: #ebccd1;">
+
+<span style="color:red"></span>
+
+Que resulta en correr la linea de código previa?
+
+</div>
+
+**Codigo 2**
+
+```{r, eval=TRUE}
+parrot_clean <- read.csv("venezuelan_parrots.csv")
+
+ggplot(data = parrot_clean, aes(x = species, y = abundance))
+```
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #a94442; background-color: #f2dede; border-color: #ebccd1;">
+
+<span style="color:red"></span>
+
+Que resulta en correr la linea de código previa?
+
+</div>
+
+**Codigo 3**
+
+```{r, eval=TRUE}
+parrot_clean <- read.csv("venezuelan_parrots.csv")
+
+ggplot(data = parrot_clean, aes(x = species, y = abundance)) + 
+  geom_boxplot()
+```
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #a94442; background-color: #f2dede; border-color: #ebccd1;">
+
+<span style="color:red"></span>
+
+Que resulta en correr la linea de código previa?
+
+</div>
+
+Por fin tenemos un gráfico que visualiza la abundancia de diferentes especies de "pericos" (Parrots) en la forma de un "gráfico de caja" (Box plot) usando los datos "parrot_clean"! La linea de código previa es el esqueleto básico para crear un gráfico en ggplot  y en este ejemplo creamos un "gráfico de caja" (Box plot) que hablaremos mas sobre en la sección siguiente. A lo mejor notaste que cada vez que quieres ver algo nuevo agregado al gráfico, tienes que implementar otra función separada por el símbolo, "+". Cada sección diferente separados por "+" se llaman **capas**.
+
+Hay muchas otras funciones que pueden ser agregados a tus gráficos en utilizar capas. 
+
+Otra función importante que sera útil en creando gráficos son `labs()`. La función `labs()` te deja cambiar los títulos de los axes del gráfico a algo mas informativo en vez de los nombres de los variables. En la linea de codigo siguente, `labs()` esta añadido a tu esqueleto básico del "gráfico de caja" (Box plot) pero como una capa nueva:
+
+**Codigo 4**
+
+```{r, eval= TRUE}
+ggplot(data = parrot_clean, aes(x = species, y = abundance)) +
+  geom_boxplot() +
+  xlab("'Tipo de Cotoro' (Type of Parrot Species)") +
+  ylab("'Numero de Pericos' (Number of Parrots) ")
+```
+
+Finalmente, es posible agregar un titulo general a tu gráfico usando la función `ggtitle()`. Esta función también esta añadida a tu esqueleto original para producir un gráfico final que seria informativo y atractivo:
+
+**Codigo 5**
+
+```{r, eval=TRUE}
+ggplot(data = parrot_clean, aes(x = species, y = abundance)) +
+  geom_boxplot() +
+ xlab("'Tipo de Cotoro' (Type of Parrot Species)") +
+  ylab("'Numero de Pericos' (Number of Parrots) ") +
+  ggtitle("Different Types of Parrot Species")
+
+```
+
+**IMAGEN -code explanation**
+
+Imagina cada capa como una entidad separada que se dedica a controlando un aspecto de tu gráfico. El uso de capas permite dividir una linea de código que normalmente seria muy largo en piezas mas digeribles. Capas continuamente pueden ser agregadas enésima de otros para cambiar un gráfico a tu gusto. No hay limite a que podrías lograr en crear con capas!
+
+## 4. Grafico de caja (Box plot)
+
+En la próxima parte del taller, vamos a continuar a usar el paquete `ggplot2()`, que instalamos previamente, a crear un "gráfico de caja" (Box plot). Un "gráfico de caja" (Box plot) es una opción de gráfico ideal cuando quieres visualizar un variable categórico y un variable continuo. Este gráfico también presenta información útil de un conjunto de datos incluyendo la diferencia en distribución y identificando valores atipos.
+
+Primeramente, necesitamos cargar el paquete para usar sus funciones dentro de tu código. Deberías completar este paso de nuevo cada vez que deseas usar este paquete en R. 
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+En adición a cargar tu paquete para utilizar las funciones, recuerda que necesitamos cargar los datos que queremos visualizar. En este taller vamos a empezar con visualizar los datos, "parrot_clean" de la sección previa. El estructura de datos, "parrot_clean", detalla la historia de ocurrencias de 8 especies de pericos Amazonios en Venezuela en 2010. *Nota:* Este estructura de datos ha sido modificada para el propósito de este taller. En el próximo taller, "Manejar Datos", aprenderíamos como limpiar datos similar a la manera en que esta estructura fue modificada. 
+
+```{r, eval=TRUE}
+parrot_clean <- read.csv("venezuelan_parrots.csv")
+```
+
+Ahora, vamos a utilizar la linea de código de la sección previa para demonstrar la función, `geom_boxplot()`, para visualizar nuestros datos en la forma de un "gráfico de caja" (Box plot).
+
+Como aprendimos en la sección previa, cada vez que quieres ver algo nuevo agregado al gráfico, tienes que añadir una nueva capa separada por el símbolo, "+". Entonces, vamos a correr la linea de código siguiente para crear un "grafico de caja" (Box plot):
+
+```{r, eval=TRUE}
+ggplot(data = parrot_clean, aes(x = species, y = abundance)) +
+  geom_boxplot()
+```
+
+Del "gráfico de caja" (Box plot) resultante, es posible ser unas conclusiones importantes sobre nuestro conjunto de datos, "parrot_clean". Primero, vemos que el especies, "A_amazonica", tiene el *median* mas alto comparado a los otros 4 especies de pericos. Sin embargo, observamos que el especies, "A_ochrocephala", tiene sitios con valores de abundancia mas altos en comparación a los otros especies.   
+
+**IMAGEN -code explanation**
+
+La primera función que usamos en esta linea de código es la función de ggplot, que hablamos sobre en la sección previa, que indica los argumentos que aplican a todas las capas del gráfico. La segunda función que usamos es `geom_boxplot()`. Esta función indica que queremos crear un gráfico de caja y la manera que queremos disponer los datos en este gráfico. 
+
+## 5. Graficos de Dispersion (Scatter plot)
+
+Ahora, antes de empezar nuestro análisis, vamos a visualizar el estructura de datos, "polar_clean", usando el paquete "ggplot2". Esta estructura simplificada daria información sobre la temperatura y cantidad de clorofilo para diferentes categorías de profundidad durante el crucero "Polarstern" en 2017. Las dos variables que estamos interesados en son "temperatura superficie promedia de la agua" (Temperature) y "cantidad de clorofila" (Chlorophyll) - los dos siendo variables continuos, cuando visualizados juntos crean un gráfico de dispersión. 
+
+Gráficos de dispersión pueden ser creados usando el comande `geom_point()` en ggplot demostrado en la linea de código siguiente:
+
+```{r, eval= TRUE, warning=FALSE}
+polar_clean <- read.csv("polar_small.csv")
+
+ggplot(data = polar_clean, aes(x = Temperature, y = Chlorophyll )) + geom_point()
+```
+
+En ver en gráfico resultante, se observa una correlación débil y negativa entre la "temperatura superficie promedia de la agua" (Temperature) y la "cantidad de clorofila" (Chlorophyll). Del "gráfico de dispersión" (Scatter plot) uno podría concluir que en temperaturas mas altas, se haya cantidades mas bajas de clorofilo. 
+
+**IMAGEN -code explanation**
+
+## 5.1 Analisis de regresion lineal (Linear regression)
+
+Ya que hemos visualizado nuestros datos en la forma de un "gráfico de dispersión" (Scatter plot), podríamos completar un "análisis de regresión lineal" (Linear regression) examinando la relación entre "temperatura superficie promedia de la agua" (Temperature) y "cantidad de clorofila" (Chlorophyll). Esta prueba puede ser completada usando la función `lm()` en la linea de código siguiente: 
+
+```{r, eval=TRUE}
+simple_linear <- lm(Chlorophyll ~ Temperature, data = polar_clean)
+```
+
+**IMAGEN - code explanation**
+
+Ahora que hemos completado el análisis, podríamos agregar una linea de regresión a nuestro "gráfico de dispersión" (Scatter plot) con hacer una modificación minor a nuestro código previo que usamos para crear el gráfico de dispersión simple.
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+ggplot(data = polar_clean, aes(x = Temperature, y= Chlorophyll)) + 
+  geom_point() + 
+  geom_smooth(method ='lm', se = FALSE)
+```
+
+Con anidar la "linea de regresión" (Regression line), nuestra conclusión previa esta confirmada con la linea demostrando un pendiente negativo en el gráfico. 
+
+**IMAGEN -code explanation**
+
+## 6. Histograma (Histogram)
+
+Ahora, vamos a aprender como visualizar nuestros datos en otra forma, en una "histograma" (Histogram), usando nuestro estructura de datos, "parrot_clean".
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #31708f; background-color: #d9edf7; border-color: #bce8f1;">
+**<span style="color:blue">Tips!</span>**
+  
+Recuerda que cada vez que abres R de nuevo y deseas usar el paquete,`ggplot2()`, tienes que cargar el paquete usando la función `library()`.
+
+</div>
+
+Ahora que estamos listos para usar el paquete `ggplot2()` podríamos empezar a crear nuestro histograma usando la linea de cogido siguiente:
+
+```{r, eval=TRUE, message = FALSE}
+ggplot(data = parrot_clean, aes(x = abundance)) +
+  geom_histogram()
+```
+
+##Plot explanation:
+
+**IMAGEN -code explanation**
+
+La primera función que usamos en la linea de código es la función `ggplot()`. Esta parte del código no es nada nuevo para nosotros porque lo usamos en cada código para crear gráficos. La segunda funcion que utilizamos es la función `geom_histogram()`. Esta función indica que queremos producir un histograma y el modo que queremos visualizar los datos en el gráfico. 
+
+## 7. Grafico de Barras (Bar graph)
+
+Ahora, al ultimo gráfico que vamos a aprender como crear en este taller. Este grafico seria el "gráfico de barras" (Bar graph). Como todos los graficos previos, vamos a utilizar el paquete `ggplot2()` entonces asegura cargar el paquete si has abierto R de nuevo! Utiliza la linea de código siguiente:
+
+```{r, eval=TRUE}
+ggplot(data = parrot_clean, aes(x = species, y = abundance)) + 
+geom_bar(stat = 'identity')
+```
+
+Los resultados de nuestro código produce un "gráfico de barras" (Bar graph) que visualiza la abundancia de cada especies de perico. Se puede observar del grafico que el especies mas abundante fue el "A_ochrocephala" y el especies menos abundante "A_barbadensis". Sin embargo, el especies "A_farinosa" estaba cerca a la abundancia de "A_barbadensis". 
+
+**IMAGEN - code explantion**
+
+## 8. Guardando tu grafico
+
+Finalmente, para guardar tu nuevo gráfico que has creado, hay dos diferentes métodos. 
+
+El primero método es haciendo clic en el botón de exportar en la pagina del gráfico. Ahora, selecciona el formato y la localización donde deseas guardar tu gráfico. 
+
+El segundo método es mucho mas fácil y puede ser completado en dos pasos. Primero, asignamos el gráfico que hemos creado a un objeto. Vamos a asignar el histograma que creamos al objeto, "histograma":
+
+```{r, eval=TRUE}
+histograma <- ggplot(data = parrot_clean, aes(x = abundance)) + geom_histogram()
+```
+
+Ahora, vamos a utilizar la función `ggsave()`. Necesitamos incluir una dirección con el nombre del archivo donde queremos guardar nuestro gráfico. En este caso, vamos a guardar nuestro gráfico directamente en el pantalla primaria:
+
+```{r, eval=FALSE}
+ggsave(file = "~/Desktop/Histograma.jpeg", plot = Histograma)
+```
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #31708f; background-color: #d9edf7; border-color: #bce8f1;">
+**<span style="color:blue">Tips!</span>**
+
+Si alguna vez estas confundido en que escribir como la dirección del archivo donde deseas guardar tu gráfico, puedes utlizar la función, `getwd()`, para obtener el formato de tu 'working directory' en el sintaxis correcto para usar la función `ggsave()`. Solamente recuerda a reemplazar todo antes de "/Desktop" con el símbolo, "~", y agrega "/'el nombre de tu gráfico'.jpeg" al fin de tu dirección antes de escribiéndolo en `ggsave()` para guardar tu gráfico directamente en tu 'working directory'.
+
+</div>
+
+## 9. Ayuda en la web
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6;">
+**<span style="color:green"></span>** 
+
+Algo importante reconocer al final de la parte instructiva de este taller, es que la visualización de datos ha evolucionado y seguiría evolucionando. Este taller solamente es una introducción básica a las posibilidades de visualización de datos. 
+
+</div>
+
+Relacionadas con Visualizar Datos:
+
++ <a href="https://journals.sagepub.com/doi/full/10.1177/15291006211051956" target="_blank">The Science of Visual Data Communication: What Works</a>
+
++ <a href="https://bookdown.org/bean_jerry/using_r_for_educational_research/survey-research.html#bivariate-analysis" target="_blank">Survey Research</a>
+
+Relacionadas con Aumentar Gráficos:
+
++ <a href="https://www.rforecology.com/post/2022-04-06-how-to-make-a-boxplot-in-r/" target="_blank">Enhancing a Boxplot</a>
+
++ <a href="https://ourcodingclub.github.io/tutorials/data-vis-2/" target="_blank">Customizing Your Figures</a>
+
++ <a href="https://www.data-to-viz.com/" target="_blank">Data to Viz</a>
+
++ <a href="https://www.r-bloggers.com/2021/07/ggdist-make-a-raincloud-plot-to-visualize-distribution-in-ggplot2/" target="_blank">Raincloud Plot</a>
+
++ <a href="https://plotly.com/ggplot2/getting-started/" target="_blank">Getting Started with Plotly</a>
+
+
+
+## Practica!
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 1</span>** 
+
+**Lee el archivo de ayuda para la función `geom_histogram()` en el paquete ggplot.**
+
+**Que hacen las diferentes partes de la siguiente linea de código? Llena los espacios en el diagrama usando la información del archivo de ayuda. RECUERDA, el archivo de ayuda no te daría instrucciones detallados. Tu deberías interpretar la información provisto y pensar sobre que las diferentes partes del código representan. **
+
+**IMAGEN**
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+  
+A. Estructuro de Datos
+
+B. Nombre de la Columna
+
+C. Estadístico para Contar Datos
+
+D. Tamaño de Lineas de Contorno
+
+E. Numero de Contenedores
+
+F. Color de Linea de Contorno
+
+</details>
+
+</div>
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 2</span>** 
+
+**Crea un "histograma" (Histogram) usando el estructura de datos, "polar", que ensena la profundidad de la agua en millas.**
+
+**Nota:**  Pon atención a no confundir la estructura de datos "polar_clean" de las secciones previas con la estructura de datos, "polar". Esta estructura que usarías para este ejercicio es la versión sin modificaciones. 
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+polar <- read.delim("ANT-XXVIII_5_seabirds_marine_mammals.tab", skip = 154)
+
+ggplot(data = polar, aes(x = `Bathy.depth..m...Mid.mean.water.depth.of.30.mi....`)) + geom_histogram()
+```
+
+**IMAGEN**
+
+</details>
+</div>
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 3</span>** 
+
+**Crea un "gráfico de dispersión" (Scatter plot) usando el estructura de datos, "ratdat", con "peso" (Weight) en el axis horizontal y "longitud de pie" (hindfoot length) en el axis vertical. EL conjunto de datos "ratdat" es un paquete en R que colecciona información del proyecto, "Portal Project", un estudio ecológico extendido de plantas, ratones, y hormigas en el sureste de Arizona, USA.**
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+
+```{r, eval=TRUE, warning=FALSE}
+
+ratdat::complete %>% 
+  ggplot(aes(x=  weight, y = hindfoot_length, colour = species)) + 
+  geom_point()
+  
+```
+
+  **IMAGEN**
+
+</details>
+</div>
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 4</span>**
+
+**Construye un "gráfico de caja" (Box plot) usando el estructura de datos del ejercicio previo, "ratdat", visualizando el "sexo" (sex) en el axis horizontal y "longitud de pie" (hindfoot length) en el axis vertical del especies "merriami".**
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+library(ratdat)
+
+complete %>% 
+  filter(species == "merriami" & sex != "") %>% ### usamos "==" cuando solamente tenemos un valor
+  ggplot(aes(x = sex, y = hindfoot_length)) + geom_boxplot()
+
+```
+
+**IMAGEN**
+</details>
+</div>
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 5a</span>**
+
+**En esta pregunta, vamos a practicar aplicando capas en ggplot usando el conjunto de datos, "ATLANTIC_BATS_Study_site.csv". Estos datos son una compilación de información del 2017 sobre comunidades de murciélagos en 205 sitios del Bosque Atlántico en Brasil, Argentina, y Paraguay. Haríamos esto por construir un gráfico simple visualizando el variable, "Altitud" (Altitude), contra el variable "Precipitación anual" (Annual rainfall)".**
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+  
+Primero, carga "ATLANTIC_BATS_Sudy_site.csv" y el paquete ggplot2 en R como normal. Asigna el nombre, "bat_site", al estructura de datos y examina la estructure usando las funciones `str()` y `head()`. 
+
+```{r, eval=TRUE, warning=FALSE}
+bat_site <- read.csv("ATLANTIC_BATS_Study_site.csv")
+
+str(bat_site)
+head(bat_site)
+```
+
+Segundo, escribe el esqueleto básica de tu gráfico. Este es la capa que indica que datos andas usando y que tus variables serán. 
+
+Luego agrega la segunda capa de tu gráfico, separándolo con el símbolo "+". Esta capa indica la manera que quieres que tus datos sen representados. En este caso, queremos que los datos sen visualizados en forma de "gráfico de dispersión" (Scatter plot) y deberíamos usar la funcion, `geom_point()`. 
+
+```{r, eval=TRUE, warning=FALSE}
+ggplot(data = bat_site , aes(x = `Altitude1km`, y = `Annual_rainfall`)) + geom_point()
+```
+
+**IMAGEN**
+
+</details>
+</div>
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 5b</span>**
+
+**Ahora, usando los resultados de la parte (a), ejecuta una "regresión lineal" (Linear regression) y visualiza la relación en el gráfico que generamos en el ejercicio previo.**
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+  
+```{r, eval=TRUE, warning=FALSE, message = FALSE}
+
+ggplot(data = bat_site , aes(x = `Altitude1km`, y = `Annual_rainfall`)) + geom_point() + 
+  geom_smooth(method = "lm") + scale_x_log10() + scale_y_log10()
+
+```
+
+**IMAGEN**
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #31708f; background-color: #d9edf7; border-color: #bce8f1;">
+**<span style="color:blue">Tips!</span>**
+
+En la linea de código previa, nota que usamos dos funciones nuevas:
+
+`scale_x_log10()` - para escalar el axis vertical por el logaritmo natural
+
+`scale_y_log10()` - para escalar el axis horizontal por el logaritmo natural
+
+En utilizar estas funciones, puedemos distribuir los datos en una manera mas precisa para arreglar la simetría entre los datos. 
+
+</div>
+
+</details>
+</div>
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 6</span>**
+
+**En este ejercicio, utiliza el estructura de datos asignado al nombre, "bat_site", del ejercicio previo para construir un "gráfico de barras" (Bar graph) visualizando el numero de ocurrencias recordados por cada estado.**
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+  
+```{r, eval=TRUE, warning=FALSE}
+
+ggplot(data = bat_site, aes(x = State)) + geom_bar() + theme(axis.text = element_text(angle = 90))
+
+```
+
+**IMAGEN**
+
+</details>
+</div>
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 7</span>**
+
+**Continuando con el mismo estructura de datos, "bat_site", crea un "gráfico de caja" (Box plot) que visualiza el variable categórico, "estado" (State) contra el variable numérico, "area de reserva" (Reserve Area)**
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+  
+```{r, eval=TRUE, warning=FALSE}
+
+ggplot(data = bat_site, aes(x = State , y = Reserve_Area)) + geom_boxplot() + theme(axis.text = element_text(angle = 90)) 
+
+```
+
+```{r, eval=TRUE, warning=FALSE}
+library(cowplot)
+
+ggplot(data = bat_site, aes(x = State , y = Reserve_Area)) + geom_boxplot() + theme_cowplot() + theme(axis.text = element_text(angle = 90))
+
+```
+
+**IMAGEN**
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #31708f; background-color: #d9edf7; border-color: #bce8f1;">
+**<span style="color:blue">Tips!</span>**
+
+En la linea de código previa, nota que estamos introducidos a otras dos funciones nuevas que podrán aumentar nuestros gráficos:
+
+`theme_cowplot()` - erradica los cuadros en el grafico
+
+`theme(axis.text = element_text(angle = 90))` - cambia la orientacion de los nombres en el axis vertical por 90 grados para hacer los nombres mas claro en el gráfico
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6;">
+**<span style="color:green">Información!</span>** 
+
+Cuando escribiendo código en R y utilizando estas funciones para mejorar tu gráfico, es importante notar que la orden es muy importante. En el caso de este ejercicio, es importante incluir la funcion `theme_cowplot()` antes de `theme(axis.text = element_text(angle = 90))` porque primero queremos que desaparece los cuadros antes de cambiar la orientación de los nombres en el axis vertical. 
+
+</div>
+</div>
+</details>
+</div>
+
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+**<span style="color:brown">Ejercicio 8</span>**
+
+**Lee el archivo de ayuda para `geom_smooth()` en el paquete "ggplot2". Llena las lineas en el gráfico siguiente con la función de cada argumento en la linea de código. **Nota**: Utiliza la información en "usage" y "arguments".**
+
+**IMAGEN**
+
+<details>
+  <summary>**Haz clic aquí para solución!**</summary>
+  
+  **IMAGEN**
+  
+</details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
