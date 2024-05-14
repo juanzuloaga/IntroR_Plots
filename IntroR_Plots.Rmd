@@ -1,5 +1,5 @@
 ---
-title:  "------------------ Introducción a R - Plots ------------------"
+title:  <center>"----- Introducción a R - Plots -----"</center>
 subtitle:  <center> <h1>"Herramientas de análisis cuantitativo y su aplicación en la conservación de la biodiversidad"</h1> </center>
 author: "Keyvette Tabb, Melissa Guzmán y Juan Zuloaga"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
@@ -358,7 +358,7 @@ ggplot(data = polar, aes(x = `Bathy.depth..m...Mid.mean.water.depth.of.30.mi....
   <summary>**Haz clic aquí para solución!**</summary>
 
 ```{r, eval=TRUE, warning=FALSE}
-
+library(ratdat)
 ratdat::complete %>% 
   ggplot(aes(x=  weight, y = hindfoot_length, colour = species)) + 
   geom_point()
@@ -379,7 +379,7 @@ ratdat::complete %>%
   <summary>**Haz clic aquí para solución!**</summary>
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE}
-library(ratdat)
+
 
 complete %>% 
   filter(species == "merriami" & sex != "") %>%
