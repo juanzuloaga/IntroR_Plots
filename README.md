@@ -14,7 +14,7 @@ Al final de este taller usted podrá saber cómo:
 - Crear un "gráfico de barras" (Bar Graph)
 
 # Desarrollado por:
-+ Keyvette (University of Southern California) - Desarrolló el taller
++ Keyvette Tabb (University of Southern California) - Desarrolló el taller
 + Melissa Guzman (University of Southern California) - Supervisión
 + Carolina Navia (Ecodiversa Tropical) - Edición
-+ Juan Zuloaga (Ecodiversa Tropical) -Revisión
++ Juan Zuloaga (Ecodiversa Tropical) - Revisión
